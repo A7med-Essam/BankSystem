@@ -1,9 +1,10 @@
 ﻿@{
     var CurrentLang = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
     @using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Identity;
 
     @inject IHttpContextAccessor httpContextAccessor;
-
+    @inject SignInManager<IdentityUser> signInManager;
     // Get the controller and action names
     var CurrentController = httpContextAccessor.HttpContext?.Request.RouteValues["controller"];
     var CurrentAction = httpContextAccessor.HttpContext?.Request.RouteValues["action"];
@@ -195,6 +196,16 @@
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
                                     <div class="message-body">
+                                        @{
+                                            if (@signInManager.IsSignedIn(User))
+                                            {
+                                                <a href="javascript:void(0)" class="d-flex align-items-center gap-2 dropdown-item">
+                                                    <i class="ti ti-user fs-6"></i>
+                                                    <p class="mb-0 fs-3">Welcome @User.Identity.Name</p>
+                                                </a>
+                                            }
+                                        }
+                                       
                                         <a href="javascript:void(0)" class="d-flex align-items-center gap-2 dropdown-item">
                                             <i class="ti ti-user fs-6"></i>
                                             <p class="mb-0 fs-3">My Profile</p>
@@ -222,8 +233,9 @@
                                             </a>
                                         }
 
-
-                                        <a href="./authentication-login.html" class="btn btn-outline-primary mx-3 mt-2 d-block">Logout</a>
+                                        <form id="logoutForm" asp-action="Logout" asp-controller="Auth" method="post">
+                                            <a onclick="submitForm()" class="btn btn-outline-primary mx-3 mt-2 d-block">Logout</a>
+                                        </form>
                                     </div>
                                 </div>
                             </li>
@@ -246,6 +258,13 @@
     <script src="~/assets/js/dashboard.js"></script>
     <script src="~/assets/libs/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/assets/libs/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+    <script>
+        function submitForm() {
+            var form = document.getElementById('logoutForm');
+            form.submit();
+        }
+    </script>
 </body>
 
 </html>

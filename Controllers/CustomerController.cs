@@ -1,4 +1,6 @@
-﻿using BankSystem.BL.Interface;
+﻿using AutoMapper;
+using BankSystem.BL.Interface;
+using BankSystem.DAL.Entities;
 using BankSystem.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,44 +8,41 @@ namespace BankSystem.Controllers
 {
     public class CustomerController : Controller
     {
-        private readonly IRepository _repository;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public CustomerController(IRepository repository)
+        public CustomerController(IUnitOfWork unitOfWork, IMapper mapper)
         {
-            this._repository = repository;
+            _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
         [Route("~/Customers")]
-        public IActionResult Index()
-        {
-            return View(_repository.GetCustomers());
-        }
+        public IActionResult Index() => View(_mapper.Map<IEnumerable<Customer_VM>>(_unitOfWork.Customers.GetAll()));
 
         [HttpGet]
-        public IActionResult Create()
-        {
-            return View();
-        }
+        public IActionResult Create() => View();
 
         [HttpPost]
-        public IActionResult Create(Customer_VM cs)
+        public IActionResult Create(Customer_VM model)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _repository.CreateCustomer(cs);
+                    _unitOfWork.Customers.Create(_mapper.Map<Customer>(model));
+                    _unitOfWork.Complete();
                     return RedirectToAction("Index");
                 }
                 catch (Exception ex)
                 {
                     ModelState.AddModelError("ModelError", ex.Message);
-                    return View(cs);
+                    return View(model);
                 }
             }
             else
             {
-                return View(cs);
+                return View(model);
             }
         }
     }
