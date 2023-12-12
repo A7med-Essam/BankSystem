@@ -2,6 +2,7 @@ using BankSystem.BL.Interface;
 using BankSystem.BL.Mapper;
 using BankSystem.BL.Repository;
 using BankSystem.DAL.Database;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
@@ -25,7 +26,8 @@ builder.Services.AddDbContextPool<ApplicationContext>(options =>
 builder.Services.AddAutoMapper(m => m.AddProfile(new DomainProfile()));
 builder.Services.AddScoped<IRepository, Repository>();
 builder.Services.AddHttpContextAccessor();
-
+builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationContext>()
+    .AddTokenProvider<DataProtectorTokenProvider<IdentityUser>>(TokenOptions.DefaultProvider);
 var app = builder.Build();
 
 var supportedCultures = new[]
@@ -56,6 +58,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+app.UseAuthentication();
 
 app.MapControllerRoute(
     name: "default",
