@@ -1,0 +1,80 @@
+﻿@model IEnumerable<BankSystem.Models.Account_VM>;
+@{
+    ViewBag.Title = "Account";
+}
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-body p-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="card-title fw-semibold mb-4">Recent Accounts</h5>
+                <a asp-controller="account" asp-action="create" class="btn btn-success py-8 fs-4 mb-4 rounded-2">Create Account</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table text-nowrap mb-0 align-middle">
+                    <thead class="text-dark fs-4">
+                        <tr>
+                            <th class="border-bottom-0 text-center">
+                                <h6 class="fw-semibold mb-0">Customer</h6>
+                            </th>
+                            <th class="border-bottom-0 text-center">
+                                <h6 class="fw-semibold mb-0">AccountNumber</h6>
+                            </th>
+                            <th class="border-bottom-0 text-center">
+                                <h6 class="fw-semibold mb-0">Balance</h6>
+                            </th>
+                          
+                            <th class="border-bottom-0 text-center">
+                                <h6 class="fw-semibold mb-0">Status</h6>
+                            </th>
+                            <th class="border-bottom-0 text-center">
+                                <h6 class="fw-semibold mb-0">InterestRate</h6>
+                            </th>
+                            <th class="border-bottom-0 text-center">
+                                <h6 class="fw-semibold mb-0">Type</h6>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="border-bottom-0 text-center">
+                                    <h6 class="fw-semibold mb-1">
+                                        @item.Holder
+                                    </h6>
+                                </td>
+                                <td class="border-bottom-0 text-center">
+                                    <h6 class="fw-semibold mb-0">
+                                        @item.AccountNumber
+                                    </h6>
+                                </td>
+                                <td class="border-bottom-0 text-center">
+                                    <p class="mb-0 fw-normal">
+                                        $@item.Balance
+                                    </p>
+                                </td>
+                            
+                                <td class="border-bottom-0 text-center">
+                                    <div class="d-flex align-items-center gap-2 justify-content-center">
+                                        <span class="badge rounded-3 fw-semibold @(item.IsActive == true ? "bg-success" : "bg-danger")">
+                                            @(item.IsActive == true ? "Active" : "Inactive")
+                                        </span>
+                                    </div>
+                                </td>
+                                <td class="border-bottom-0 text-center">
+                                    <h6 class="fw-semibold mb-0 fs-4">@item.InterestRate %</h6>
+                                </td>
+                                  <td class="border-bottom-0 text-center">
+                                    <p class="mb-0 fw-normal">
+                                        @item.Type
+                                    </p>
+                                </td>
+                            </tr>
+                        }
+            
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
